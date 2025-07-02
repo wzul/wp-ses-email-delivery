@@ -259,11 +259,11 @@ class SES_Email_Tracker {
 									<td><?php echo esc_html( ucfirst( $item->notification_type ) ); ?></td>
 									<td><?php echo esc_html( $item->email_address ); ?></td>
 									<td>
-										<?php if ( $item->notification_type === 'bounce' ) : ?>
+										<?php if ( $item->notification_type === 'Bounce' ) : ?>
 											<?php echo esc_html( $item->bounce_type . '/' . $item->bounce_subtype ); ?>
-										<?php elseif ( $item->notification_type === 'complaint' ) : ?>
+										<?php elseif ( $item->notification_type === 'Complaint' ) : ?>
 											<?php echo esc_html( $item->complaint_type ); ?>
-										<?php elseif ( $item->notification_type === 'delivery' ) : ?>
+										<?php elseif ( $item->notification_type === 'Delivery' ) : ?>
 											Delivered
 										<?php endif; ?>
 									</td>
