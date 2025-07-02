@@ -121,29 +121,29 @@ function verify_sns_message( $message ) {
  * Maintains the email_responses table by removing oldest records if count exceeds 100,000
  */
 function maintain_email_responses_table() {
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'email_responses';
-    
-    // Check current row count
-    $count = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
-    
-    if ($count > 100000) {
-        // Calculate how many to delete (keeping exactly 100,000)
-        $to_delete = $count - 100000;
-        
-        // Delete oldest records
-        $wpdb->query(
-            $wpdb->prepare(
-                "DELETE FROM $table_name 
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'email_responses';
+
+	// Check current row count
+	$count = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
+
+	if ( $count > 100000 ) {
+		// Calculate how many to delete (keeping exactly 100,000)
+		$to_delete = $count - 100000;
+
+		// Delete oldest records
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM $table_name 
                  ORDER BY created_at ASC 
-                 LIMIT %d", 
-                $to_delete
-            )
-        );
-        
-        // Optional: Optimize table after deletion
-        $wpdb->query("OPTIMIZE TABLE $table_name");
-    }
+                 LIMIT %d",
+				$to_delete
+			)
+		);
+
+		// Optional: Optimize table after deletion
+		$wpdb->query( "OPTIMIZE TABLE $table_name" );
+	}
 }
 
 if ( ! verify_sns_message( $message ) ) {
@@ -207,6 +207,24 @@ if ( $headers['X-Amz-Sns-Message-Type'] === 'Notification' ) {
 			// Get the first delivered recipient
 			if ( ! empty( $delivery['recipients'] ) ) {
 				$insert_data['email_address'] = $delivery['recipients'][0] ?? '';
+			}
+			break;
+
+		case 'Reject':
+			$reject = $notification['reject'];
+
+			// Set basic rejection info
+			$insert_data['status']          = 'Rejected';
+			$insert_data['diagnostic_code'] = $reject['reason'] ?? 'Unknown rejection reason';
+
+			// If available, include the original message details
+			if ( isset( $notification['mail'] ) ) {
+				$insert_data['message_id'] = $notification['mail']['messageId'] ?? '';
+
+				// Get the first recipient if available
+				if ( ! empty( $notification['mail']['destination'] ) ) {
+					$insert_data['email_address'] = $notification['mail']['destination'][0] ?? '';
+				}
 			}
 			break;
 
