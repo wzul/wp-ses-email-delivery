@@ -15,7 +15,8 @@ This plugin to track AWS Simple Email Service deliverability.
     - Click "Create configuration set"
     - Give it a name (e.g., "EmailTracking")
     - Under "Event destinations", add destinations for:
-        - Bounces
+        - Rejects
+        - Bounces (Hard Bounces & Delivery delays)
         - Complaints
         - Deliveries
 
