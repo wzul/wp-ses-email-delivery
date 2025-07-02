@@ -34,4 +34,4 @@ This plugin to track AWS Simple Email Service deliverability.
 ## Setting in AWS Console for SNS
 
 1. Set in SNS to the URL of your website:
-    - Subscription URL: https://<yoursite>/ses-webhook.php
+    - Subscription URL: https://<yoursite>/?ses_webhook=1
